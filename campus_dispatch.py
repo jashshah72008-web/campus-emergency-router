@@ -3,8 +3,8 @@ import sqlite3
 from datetime import datetime
 
 class EmergencyDatabase:
-    """Handles SQLite database operations for incident logging and responder tracking."""
-    def __init__(self, db_name="campus_emergency.db"):
+    """Handles SQLite database operations for LJU incident logging and responder tracking."""
+    def __init__(self, db_name="lju_sarkhej_emergency.db"):
         self.conn = sqlite3.connect(db_name)
         self.cursor = self.conn.cursor()
         self._initialize_tables()
@@ -38,7 +38,7 @@ class EmergencyDatabase:
 
 
 class CampusGraph:
-    """Weighted Undirected Graph representing campus buildings and walkways."""
+    """Weighted Undirected Graph representing LJU Sarkhej Campus buildings and walkways."""
     def __init__(self):
         self.adj_list = {}
 
@@ -56,7 +56,7 @@ class CampusGraph:
     def shortest_path_dijkstra(self, start_node, target_node):
         """
         Uses Dijkstra's Algorithm with a Min-Heap Priority Queue
-        to find the fastest emergency route in O((V + E) log V) time.
+        to find the fastest emergency route across LJU in O((V + E) log V) time.
         """
         if start_node not in self.adj_list or target_node not in self.adj_list:
             return None, float('inf')
@@ -84,37 +84,44 @@ class CampusGraph:
 
 
 class DispatchController:
-    """Core controller linking the Campus Graph, Responders, and Database."""
+    """Core controller linking the LJU Sarkhej Campus Graph, Responders, and SQLite Database."""
     def __init__(self):
         self.graph = CampusGraph()
         self.db = EmergencyDatabase()
+        # Active emergency units stationed at key LJU Sarkhej Campus buildings
         self.responders = {
-            "Unit-A1 (Medical Buggy)": "Medical Center",
-            "Unit-B2 (First-Aid Patrol)": "Sports Complex",
-            "Unit-C3 (Security Response)": "Main Gate"
+            "Unit-A1 (Medical & First-Aid Buggy)": "LJ Pharmacy & Physiotherapy Block",
+            "Unit-B2 (Rapid Athletics Patrol)": "LJU Sports Ground",
+            "Unit-C3 (Main Security & Fire Response)": "LJU Main Gate (Sarkhej-Sanand Rd)"
         }
-        self._load_default_campus_map()
+        self._load_lju_sarkhej_campus_map()
 
-    def _load_default_campus_map(self):
+    def _load_lju_sarkhej_campus_map(self):
+        # LJU Sarkhej Campus Walkways: (Building A, Building B, Base Travel Seconds, Crowd Multiplier)
         edges = [
-            ("Main Gate", "Admin Block", 60, 1.0),
-            ("Admin Block", "CSE Lab Block", 90, 1.2),
-            ("Admin Block", "Central Library", 75, 1.0),
-            ("CSE Lab Block", "Cafeteria", 80, 1.5),
-            ("Central Library", "Cafeteria", 70, 1.3),
-            ("Central Library", "Medical Center", 50, 1.0),
-            ("Cafeteria", "Auditorium", 95, 1.2),
-            ("Medical Center", "Hostel Zone", 110, 1.0),
-            ("Sports Complex", "Hostel Zone", 85, 1.0),
-            ("Sports Complex", "Auditorium", 100, 1.1),
-            ("CSE Lab Block", "Sports Complex", 130, 1.0)
+            ("LJU Main Gate (Sarkhej-Sanand Rd)", "LJU Central Admin & Placement Cell", 45, 1.1),
+            ("LJU Main Gate (Sarkhej-Sanand Rd)", "LJ School of Law & Commerce Block", 60, 1.2),
+            ("LJU Central Admin & Placement Cell", "LJIET Engineering Block (CSE/AI-ML)", 75, 1.2),
+            ("LJU Central Admin & Placement Cell", "LJIMS Management & MBA Block", 65, 1.0),
+            ("LJIET Engineering Block (CSE/AI-ML)", "LJICA Computer Applications (BCA/MCA)", 50, 1.1),
+            ("LJIET Engineering Block (CSE/AI-ML)", "LJ Polytechnic (Diploma Wing)", 70, 1.2),
+            ("LJIET Engineering Block (CSE/AI-ML)", "LJU Central Canteen & Food Court", 60, 1.6), # High recess crowd
+            ("LJICA Computer Applications (BCA/MCA)", "LJU Central Library & Innovation Village", 55, 1.0),
+            ("LJIMS Management & MBA Block", "LJU Central Canteen & Food Court", 65, 1.5),
+            ("LJU Central Canteen & Food Court", "Open Air Theatre (OAT) & Auditorium", 50, 1.4),
+            ("LJU Central Library & Innovation Village", "LJ Pharmacy & Physiotherapy Block", 60, 1.0),
+            ("LJ Pharmacy & Physiotherapy Block", "LJ Applied Sciences & Architecture (LJSA)", 55, 1.0),
+            ("LJ Polytechnic (Diploma Wing)", "LJU Sports Ground", 80, 1.1),
+            ("Open Air Theatre (OAT) & Auditorium", "LJU Sports Ground", 70, 1.2),
+            ("LJ Applied Sciences & Architecture (LJSA)", "LJU Sports Ground", 85, 1.0),
+            ("LJ School of Law & Commerce Block", "LJIMS Management & MBA Block", 60, 1.1)
         ]
         for u, v, t, c in edges:
             self.graph.add_Walkway(u, v, t, c)
 
     def trigger_emergency(self, incident_type, incident_location):
         if incident_location not in self.graph.adj_list:
-            print(f"\n[!] Error: '{incident_location}' is not a valid campus location.")
+            print(f"\n[!] Error: '{incident_location}' is not a registered LJU campus building.")
             return
 
         best_responder = None
@@ -132,42 +139,46 @@ class DispatchController:
             self.responders[best_responder] = incident_location
             self.db.log_incident(incident_type, incident_location, best_responder, best_route, min_eta)
 
-            print("\n" + "=" * 60)
-            print(f" EMERGENCY DISPATCH CONFIRMED: {incident_type.upper()}")
-            print("=" * 60)
-            print(f" Target Location    : {incident_location}")
+            print("\n" + "=" * 72)
+            print(f" LJU SARKHEJ CAMPUS DISPATCH CONFIRMED: {incident_type.upper()}")
+            print("=" * 72)
+            print(f" Target Department  : {incident_location}")
             print(f" Assigned Unit      : {best_responder}")
-            print(f" Optimal Route      : {' -> '.join(best_route)}")
+            print(f" Fastest Route      : {' -> '.join(best_route)}")
             print(f" Estimated Arrival  : {min_eta} seconds ({min_eta / 60:.1f} mins)")
-            print("=" * 60)
+            print("=" * 72)
 
     def show_campus_locations(self):
-        print("\n--- Registered Campus Nodes & Active Responders ---")
-        for idx, loc in enumerate(sorted(self.graph.adj_list.keys()), 1):
+        print("\n--- LJU Sarkhej Campus Departments & Stationed Emergency Units ---")
+        locations = sorted(self.graph.adj_list.keys())
+        for idx, loc in enumerate(locations, 1):
             stationed = [r for r, pos in self.responders.items() if pos == loc]
-            tag = f" [Stationed: {', '.join(stationed)}]" if stationed else ""
-            print(f" {idx}. {loc}{tag}")
+            tag = f"  <-- [STATIONED: {', '.join(stationed)}]" if stationed else ""
+            print(f" {idx:2d}. {loc}{tag}")
+        return locations
 
     def show_audit_logs(self):
         records = self.db.get_all_incidents()
-        print("\n" + "=" * 85)
-        print(" SQLITE INCIDENT AUDIT LOG")
-        print("=" * 85)
+        print("\n" + "=" * 90)
+        print(" LJU CAMPUS SAFETY - SQLITE INCIDENT AUDIT LOG")
+        print("=" * 90)
         if not records:
             print(" No emergency incidents logged yet.")
         for row in records:
             print(f" [ID #{row[0]}] {row[1]} | {row[2]} @ {row[3]}")
-            print(f"    Unit: {row[4]} | ETA: {row[6]}s | Path: {row[5]}")
-            print("-" * 85)
+            print(f"    Unit: {row[4]} | ETA: {row[6]}s | Route: {row[5]}")
+            print("-" * 90)
 
 
 def main():
     system = DispatchController()
     while True:
-        print("\n=== CAMPUS EMERGENCY & FIRST-AID ROUTING SYSTEM ===")
-        print("1. View Campus Map Nodes & Responder Positions")
-        print("2. Dispatch Emergency Response (Simulate Incident)")
-        print("3. Update Walkway Congestion Factor (Dynamic Graph Weight)")
+        print("\n==============================================================")
+        print("   LOK JAGRUTI UNIVERSITY (LJU SARKHEJ) - EMERGENCY ROUTER")
+        print("==============================================================")
+        print("1. View LJU Campus Departments & Stationed Responder Units")
+        print("2. Trigger Emergency Dispatch (Select Building by Number)")
+        print("3. Update Walkway Crowd Multiplier (Recess / Fest Congestion)")
         print("4. View SQLite Emergency Audit History")
         print("5. Exit")
 
@@ -176,25 +187,37 @@ def main():
         if choice == "1":
             system.show_campus_locations()
         elif choice == "2":
-            system.show_campus_locations()
-            loc = input("\nEnter exact incident location name (e.g., CSE Lab Block): ").strip()
-            inc_type = input("Enter emergency type (e.g., Heatstroke / Lab Injury / Fire Alarm): ").strip()
-            if loc and inc_type:
-                system.trigger_emergency(inc_type, loc)
-        elif choice == "3":
-            u = input("Enter First Location (e.g., CSE Lab Block): ").strip()
-            v = input("Enter Connected Location (e.g., Cafeteria): ").strip()
+            locations = system.show_campus_locations()
             try:
-                base = int(input("Enter Base Travel Time in seconds (e.g., 80): "))
-                crowd = float(input("Enter Crowd Congestion Multiplier (1.0 = clear, 2.5 = jammed): "))
-                system.graph.add_Walkway(u, v, base, crowd)
-                print(f"[+] Updated walkway weight between {u} and {v} to {int(base * crowd)}s.")
+                loc_num = int(input(f"\nEnter Building Number (1-{len(locations)}): ").strip())
+                if 1 <= loc_num <= len(locations):
+                    selected_building = locations[loc_num - 1]
+                    inc_type = input("Enter Emergency Type (e.g., CSE Lab Short Circuit / Heatstroke / Workshop Injury): ").strip()
+                    if inc_type:
+                        system.trigger_emergency(inc_type, selected_building)
+                else:
+                    print("[!] Invalid building number.")
+            except ValueError:
+                print("[!] Please enter a valid number.")
+        elif choice == "3":
+            locations = system.show_campus_locations()
+            try:
+                u_idx = int(input("\nEnter First Building Number: ").strip()) - 1
+                v_idx = int(input("Enter Connected Building Number: ").strip()) - 1
+                base = int(input("Enter Base Walking/Buggy Time in seconds (e.g., 60): ").strip())
+                crowd = float(input("Enter Crowd Multiplier (1.0 = clear, 2.0 = recess rush): ").strip())
+                if 0 <= u_idx < len(locations) and 0 <= v_idx < len(locations):
+                    u, v = locations[u_idx], locations[v_idx]
+                    system.graph.add_Walkway(u, v, base, crowd)
+                    print(f"[+] Updated LJU walkway between '{u}' and '{v}' to {int(base * crowd)}s.")
+                else:
+                    print("[!] Invalid building numbers.")
             except ValueError:
                 print("[!] Invalid numeric input.")
         elif choice == "4":
             system.show_audit_logs()
         elif choice == "5":
-            print("Shutting down Dispatch System.")
+            print("Shutting down LJU Emergency Dispatch System.")
             break
         else:
             print("[!] Invalid option. Please select 1-5.")
