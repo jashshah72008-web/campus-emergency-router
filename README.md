@@ -27,5 +27,20 @@ This system models the physical **LJU Sarkhej Campus** as a **dynamically weight
 | **DBMS & Persistence** | Automated incident logging using embedded `SQLite3` (`lju_sarkhej_emergency.db`) | ACID-Compliant Storage |
 
 ## 🚀 How to Run Locally
-```bash
-python3 campus_dispatch.py
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/jashshah72008-web/cmapus-emergency-router.git](https://github.com/jashshah72008-web/cmapus-emergency-router.git)
+   cd cmapus-emergency-router
+
+
+
+
+
+
+
+
+
+
+
+
+   
