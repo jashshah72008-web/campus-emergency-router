@@ -1,29 +1,31 @@
-# 🚨 Campus Emergency & First-Aid Response Routing System
+# 🚨 LJU Sarkhej Campus — Emergency & First-Aid Response Routing System
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
 ![SQLite](https://img.shields.io/badge/Database-SQLite3-003B57?logo=sqlite&logoColor=white)
 ![DSA](https://img.shields.io/badge/DSA-Graph%20%7C%20Dijkstra%20%7C%20Min--Heap-success)
-![Status](https://img.shields.io/badge/Academic%20Project-B.Tech%20CSE-orange)
+![University](https://img.shields.io/badge/Campus-Lok%20Jagruti%20University%20(LJU)-orange)
 
-An algorithmic emergency dispatch and pathfinding engine designed for large university campuses. During medical emergencies, lab accidents, or fire drills, pedestrian congestion across campus walkways delays response teams. This system models a university campus as a **dynamically weighted undirected graph** and executes **Dijkstra's Shortest Path Algorithm** via a **Min-Heap Priority Queue** to route the closest emergency responder in real time.
+An algorithmic emergency dispatch and pathfinding engine customized for the **Lok Jagruti Kendra University (LJU) Sarkhej-Sanand Campus, Ahmedabad**. With over 18,000+ students moving across 13+ institutes (LJIET, LJ Polytechnic, LJIMS, LJIP, LJICA, LJSA, and Law), pedestrian congestion during recess, lab changeovers, and fests like *LJ Innovation Village* can delay emergency response teams.
 
-## 🎯 Real-World Problem Statement
-Standard GPS navigation struggles inside closed university pedestrian zones where foot traffic fluctuates drastically between lectures, lunch breaks, and college fests. This project solves internal campus response delays by:
-1. Calculating the **minimum effective travel time** rather than raw geometric distance by factoring in walkway congestion multipliers.
-2. Evaluating multiple stationed response units simultaneously and auto-dispatching the unit with the lowest Estimated Time of Arrival (ETA).
-3. Maintaining an immutable **SQLite3 audit log** of all emergency dispatches for campus safety compliance.
+This system models the physical **LJU Sarkhej Campus** as a **dynamically weighted undirected graph** and executes **Dijkstra's Shortest Path Algorithm** via a **Min-Heap Priority Queue** to route the closest stationed emergency responder in real time.
 
-## 🧠 Core Computer Science Concepts Demonstrated
+## 🏛️ Mapped LJU Sarkhej Campus Nodes & Responders
+* **Stationed Response Units:**
+  * `Unit-A1 (Medical & First-Aid Buggy)` — Stationed at **LJ Pharmacy & Physiotherapy Block**
+  * `Unit-B2 (Rapid Athletics Patrol)` — Stationed at **LJU Sports Ground**
+  * `Unit-C3 (Main Security & Fire Response)` — Stationed at **LJU Main Gate (Sarkhej-Sanand Rd)**
+* **Connected Department Nodes:** LJIET Engineering Block (CSE/AI-ML), LJICA Computer Applications (BCA/MCA), LJ Polytechnic (Diploma Wing), LJIMS Management & MBA Block, LJ School of Law & Commerce Block, LJ Applied Sciences & Architecture (LJSA), LJU Central Library & Innovation Village, LJU Central Canteen & Food Court, and Open Air Theatre (OAT) & Auditorium.
+
+## 🧠 Core CSE Concepts Demonstrated
 
 | Subject Domain | Implementation in Project | Time / Space Complexity |
 | :--- | :--- | :--- |
-| **Data Structures (Graphs)** | Adjacency List representation of campus buildings and walkways | O(V + E) Space |
-| **Greedy Algorithms** | Dijkstra's Shortest Path Algorithm for optimal responder routing | O((V + E) log V) Time |
-| **Priority Queues** | Binary Min-Heap (`heapq`) for selecting minimum-weight edges | O(log V) Extraction |
+| **Data Structures (Graphs)** | Adjacency List of 13 LJU Campus blocks & 16 interconnected walkways | O(V + E) Space |
+| **Greedy Algorithms** | Dijkstra's Shortest Path Algorithm factoring live recess crowd multipliers | O((V + E) log V) Time |
+| **Priority Queues** | Binary Min-Heap (`heapq`) for selecting minimum-ETA walkways | O(log V) Extraction |
 | **Object-Oriented Design** | Encapsulated classes (`CampusGraph`, `DispatchController`, `EmergencyDatabase`) | Modular MVC Architecture |
-| **DBMS & Persistence** | Automated relational logging using embedded `SQLite3` | ACID-Compliant Storage |
+| **DBMS & Persistence** | Automated incident logging using embedded `SQLite3` (`lju_sarkhej_emergency.db`) | ACID-Compliant Storage |
 
 ## 🚀 How to Run Locally
-1. Clone the repository and enter the directory.
-2. Execute the dispatch engine (Zero external dependencies required):
-   `python3 campus_dispatch.py`
+```bash
+python3 campus_dispatch.py
