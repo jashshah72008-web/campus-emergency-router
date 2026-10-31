@@ -29,18 +29,5 @@ This system models the physical **LJU Sarkhej Campus** as a **dynamically weight
 ## 🚀 How to Run Locally
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/jashshah72008-web/cmapus-emergency-router.git](https://github.com/jashshah72008-web/cmapus-emergency-router.git)
-   cd cmapus-emergency-router
-
-
-
-
-
-
-
-
-
-
-
-
-   
+  git clone https://github.com/jashshah72008-web/cmapus-emergency-router.git
+cd cmapus-emergency-router
